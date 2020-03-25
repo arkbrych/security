@@ -1,19 +1,21 @@
 package pl.brych.security.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import pl.brych.security.dto.AppUser;
-import pl.brych.security.repository.AppRepository;
+import pl.brych.security.service.UserService;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @AllArgsConstructor
 public class MainController {
 
-    private AppRepository appRepository;
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
 
     @RequestMapping("/login")
     public String login() {
@@ -26,9 +28,14 @@ public class MainController {
     }
 
     @RequestMapping("/register")
-    public ModelAndView register(AppUser user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        appRepository.save(user);
+    public ModelAndView register(AppUser user, HttpServletRequest request) throws MessagingException {
+        userService.addNewUser(user, request);
+        return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping("/verify-token")
+    public ModelAndView token(@RequestParam String token) {
+        userService.verifytoken(token);
         return new ModelAndView("redirect:/login");
     }
 }
