@@ -1,13 +1,15 @@
 package pl.brych.security.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class VerificationToken {
 
     @Id
@@ -19,16 +21,8 @@ public class VerificationToken {
     @OneToOne
     private AppUser appUser;
 
-    public VerificationToken(AppUser appUser, String value) {
-        this.appUser = appUser;
-        this.value = value;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
+    public VerificationToken(AppUser user, String token) {
+        this.appUser = user;
+        this.value = token;
     }
 }

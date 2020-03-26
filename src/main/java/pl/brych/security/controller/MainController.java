@@ -8,7 +8,6 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.brych.security.dto.AppUser;
 import pl.brych.security.service.UserService;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -28,14 +27,14 @@ public class MainController {
     }
 
     @RequestMapping("/register")
-    public ModelAndView register(AppUser user, HttpServletRequest request) throws MessagingException {
+    public ModelAndView register(AppUser user, HttpServletRequest request) {
         userService.addNewUser(user, request);
         return new ModelAndView("redirect:/login");
     }
 
     @RequestMapping("/verify-token")
     public ModelAndView token(@RequestParam String token) {
-        userService.verifytoken(token);
+        userService.verifyToken(token);
         return new ModelAndView("redirect:/login");
     }
 }

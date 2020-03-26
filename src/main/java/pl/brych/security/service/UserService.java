@@ -21,11 +21,17 @@ public class UserService {
     private VerificationTokenRepo verificationTokenRepo;
     private MailSenderService mailSenderService;
 
-    public void addNewUser(AppUser user, HttpServletRequest request) throws MessagingException {
+    public void addNewUser(AppUser user, HttpServletRequest request) {
+        // Save user to repository
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         appRepository.save(user);
+
+        // Save token to repository
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken(user, token);
+        verificationTokenRepo.save(verificationToken);
+
+        // Generated token
         String url = "http://" + request.getServerName() +
                 ":" +
                 request.getServerPort() +
@@ -33,7 +39,7 @@ public class UserService {
                 "/verify-token?token=" + token;
         try {
             mailSenderService.sendMail(user.getUsername(),
-                    "VerificationToken",
+                    "Verification Token",
                     url,
                     false);
         } catch (MessagingException e) {
@@ -41,7 +47,7 @@ public class UserService {
         }
     }
 
-    public void verifytoken(String token) {
+    public void verifyToken(String token) {
         AppUser appUser = verificationTokenRepo.findByValue(token).getAppUser();
         appUser.setEnabled(true);
         appRepository.save(appUser);
