@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     private UserDetailsService userDetailsService;
 
     public SecurityConfig(UserDetailsService userDetailsService) {
@@ -29,18 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-//        User userAdmin = new User("Admin",
-//                getPasswordEncoder().encode("admin123"),
-//                Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
-//        User userUser = new User("user",
-//                getPasswordEncoder().encode("user123"),
-//                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
-//        // user from database
-//        // auth.jdbcAuthentication()
-//        auth.inMemoryAuthentication().withUser(userAdmin);
-//        auth.inMemoryAuthentication().withUser(userUser);
-
         auth.userDetailsService(userDetailsService);
     }
 
@@ -53,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").defaultSuccessUrl("/forUser").permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/forAll");
+                .logout().logoutSuccessUrl("/forAll")
+                .and()
+                .rememberMe();
     }
 }
